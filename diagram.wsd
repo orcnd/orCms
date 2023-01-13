@@ -1,0 +1,89 @@
+@startuml orCms
+!theme crt-amber
+
+
+class Page {
+    Integer id
+    String title
+    String slug
+    String content
+    Boolean visibility
+}
+
+class Seo {
+    Integer id
+    Integer page_id
+    String title
+    String description
+    String keywords
+}
+
+Seo::page_id --> Page::id
+
+class Category {
+    Integer int
+    String name
+}
+
+class Comment {
+    Integer id
+    String name
+    String content
+    Integer category_id
+    Boolean visibility
+    Date date
+}
+
+class Product {
+    Integer id
+    String name
+    String description
+    Integer category_id
+    String buyUrl
+    Boolean visibility
+    Integer order
+}
+
+Comment::category_id --> Category::id
+Product::category_id --> Category::id
+
+
+class Price {
+    Integer id
+    Integer product_id
+    Float amount
+    Int span
+    String spanType
+    String currency
+}
+
+
+
+class Discount {
+    Integer id
+    Integer price_id
+    Float amount
+    String type
+    Int span
+    String spanType
+}
+
+Price::product_id --> Product::id
+Discount::price_id --> Price::id
+
+class Gallery {
+    Integer id
+    String name
+    String slug
+}
+
+class Image {
+    Integer id
+    Integer gallery_id
+    String name
+}
+
+Gallery::id --> Image::gallery_id
+
+@enduml
+
