@@ -28,3 +28,6 @@ Thumbs.db
 
 /resources/views/templates/*
 !/resources/views/templates/default
+
+/resources/templateAssets/*
+!/resources/templateAssets/default

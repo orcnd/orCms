@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\CrudController;
+
 class ProductController extends CrudController
 {
     public function __construct()

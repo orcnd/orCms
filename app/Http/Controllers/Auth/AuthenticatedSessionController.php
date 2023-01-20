@@ -17,7 +17,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('templates.' . config('app.template') . '.auth.login');
+        return view(
+            'templates.' . config('app.template') . '.pages.guest.login'
+        );
     }
 
     /**

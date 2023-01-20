@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Http\Request;
-class CrudController extends Controller
+class CrudController extends BaseController
 {
     /**
      * model of the controller
@@ -76,7 +77,16 @@ class CrudController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->model::validationRules());
-        $this->model->create($request->all());
+        $data = $request->all();
+        foreach ($this->model::formFields() as $field) {
+            if ($field['type'] == 'date' || $field['type'] == 'dateTime') {
+                $data[$field['name']] = date(
+                    'Y-m-d H:i:s',
+                    strtotime($data[$field['name']])
+                );
+            }
+        }
+        $this->model->create($data);
         return redirect()->route($this->route . '.index');
     }
 
@@ -90,6 +100,7 @@ class CrudController extends Controller
     {
         $item = $this->model::findOrFail($item);
         dd($item->toArray());
+        return '';
     }
 
     /**
@@ -119,7 +130,17 @@ class CrudController extends Controller
     {
         $item = $this->model::findOrFail($item);
         $request->validate($this->model::validationRules());
-        $item->update($request->all());
+        $data = $request->all();
+        foreach ($this->model::formFields() as $field) {
+            if ($field['type'] == 'date' || $field['type'] == 'dateTime') {
+                $data[$field['name']] = date(
+                    'Y-m-d H:i:s',
+                    strtotime($data[$field['name']])
+                );
+            }
+        }
+
+        $item->update($data);
         return redirect()->route($this->route . '.index');
     }
 

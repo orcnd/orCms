@@ -14,14 +14,6 @@
         @if ($columnData['type'] == 'select')
         {{$row[$col]}}
         @endif
-
-        @if ($columnData['type'] == 'date')
-        {{date('d/m/Y',strtotime($row[$col]))}}
-        @endif
-
-        @if ($columnData['type'] == 'dateTime')
-        {{date('d/m/Y H:i:s',strtotime($row[$col]))}}
-        @endif
     </td>
     @endforeach
     <td>

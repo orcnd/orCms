@@ -98,6 +98,9 @@ class crudModel extends Model
                     'required' => in_array('required', $field['validation'])
                         ? 'required'
                         : '',
+                    'autocomplete' => isset($field['autocomplete'])
+                        ? $field['autocomplete']
+                        : [],
                 ];
             }
         }

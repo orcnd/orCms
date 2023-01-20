@@ -212,8 +212,8 @@ return [
         ->toArray(),
 
     //selected template dir name
-    'template' => 'default',
+    'template' => env('APP_TEMPLATE', 'default'),
 
     //admin url prefix
-    'adminUrl' => 'admina',
+    'adminUrl' => env('APP_ADMINURL', 'admin'),
 ];

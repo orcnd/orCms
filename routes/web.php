@@ -15,15 +15,32 @@ use App\Http\Controllers\Controller;
 |
 */
 
-Route::get('/', [Controller::class, 'home'])->name('home');
+$routePrefix = config('app.adminUrl');
+$routeNamePrefix = 'admin';
 
-Route::get('dashboard', [Controller::class, 'home'])
+Route::get(config('app.adminUrl'), function () {
+    return view('templates.' . config('app.template') . '.pages.admin.home');
+})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get(config('app.adminUrl'), [Controller::class, 'adminHome'])
+Route::get(config('app.adminUrl'), function () {
+    return view('templates.' . config('app.template') . '.pages.admin.home');
+})
     ->middleware(['auth', 'verified'])
     ->name('admin.home');
+
+Route::get(config('app.adminUrl') . '/template', function () {
+    return view(
+        'templates.' . config('app.template') . '.pages.admin.template',
+        [
+            'title' => 'Template',
+            'settings' => templateHelper::getTemplateSettings(),
+        ]
+    );
+})
+    ->middleware(['auth', 'verified'])
+    ->name('admin.template');
 
 /**
  * create a route for a CRUD controller
@@ -85,69 +102,51 @@ function crudRouteCreate(
     ])->name("{$routeNamePrefix}{$name}.destroy");
 }
 
-crudRouteCreate(
-    \App\Http\Controllers\CommentController::class,
-    'page',
-    'page',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\DiscountController::class,
-    'discount',
-    'discount',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\GalleryController::class,
-    'gallery',
-    'gallery',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\ImageController::class,
-    'image',
-    'image',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\PageController::class,
-    'page',
-    'page',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\PriceController::class,
-    'price',
-    'price',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\ProductController::class,
-    'product',
-    'product',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\SeoController::class,
-    'seo',
-    'seo',
-    config('app.adminUrl'),
-    'admin'
-);
-crudRouteCreate(
-    \App\Http\Controllers\CategoryController::class,
-    'category',
-    'category',
-    config('app.adminUrl'),
-    'admin'
-);
+$routesForModels = [
+    [\App\Http\Controllers\PageController::class, 'page', 'page'],
+    [\App\Http\Controllers\DiscountController::class, 'discount', 'discount'],
+    [\App\Http\Controllers\GalleryController::class, 'gallery', 'gallery'],
+    [\App\Http\Controllers\ImageController::class, 'image', 'image'],
+    [\App\Http\Controllers\PriceController::class, 'price', 'price'],
+    [\App\Http\Controllers\CommentController::class, 'comment', 'comment'],
+    [\App\Http\Controllers\ProductController::class, 'product', 'product'],
+    [\App\Http\Controllers\SeoController::class, 'seo', 'seo'],
+    [\App\Http\Controllers\CategoryController::class, 'category', 'category'],
+    [\App\Http\Controllers\AdvertController::class, 'advert', 'advert'],
+    [\App\Http\Controllers\MenuController::class, 'menu', 'menu'],
+    [\App\Http\Controllers\MetaController::class, 'meta', 'meta'],
+];
+
+foreach ($routesForModels as $routeForModel) {
+    crudRouteCreate(
+        $routeForModel[0],
+        $routeForModel[1],
+        $routeForModel[2],
+        $routePrefix,
+        $routeNamePrefix
+    );
+}
+
+//create menu sub item action
+Route::get("{$routePrefix}/menu/createSub/{id}", [
+    \App\Http\Controllers\MenuController::class,
+    'createSub',
+])->name("{$routeNamePrefix}.menu.createSub");
+
+// setting home page route
+Route::get('/', function () {
+    return view('templates.' . config('app.template') . '.pages.guest.home');
+})->name('home');
+
+//generating routes for static pages of selected template
+$templateSettings = templateHelper::getTemplateSettings();
+foreach ($templateSettings['staticPages'] as $staticPage) {
+    Route::get('sp/' . $staticPage['route'], function () use ($staticPage) {
+        return view(
+            'templates.' . config('app.template') . '.' . $staticPage['view']
+        );
+    })->name('sp.' . $staticPage['name']);
+}
 
 Route::middleware('guest')->group(function () {
     Route::get(config('app.adminUrl') . '/login', [
@@ -170,5 +169,3 @@ Route::middleware('auth')->group(function () {
         'destroy',
     ])->name('logout');
 });
-
-//Auth::routes();

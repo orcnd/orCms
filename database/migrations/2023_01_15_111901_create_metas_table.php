@@ -12,14 +12,11 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('metas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('content');
-            $table->integer('score');
-            $table->bigInteger('category_id');
-            $table->boolean('visibility');
-            $table->date('date');
+            $table->timestamps();
         });
     }
 
@@ -30,6 +27,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('metas');
     }
 };
